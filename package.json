@@ -1,0 +1,15 @@
+{
+  "name": "myelina-bucket",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Daemon local para simular buckets multimedia por proyecto.",
+  "bin": {
+    "myelina-bucket": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node ./src/cli.js start",
+    "status": "node ./src/cli.js status",
+    "test": "node --test ./tests/**/*.test.js"
+  }
+}
+
