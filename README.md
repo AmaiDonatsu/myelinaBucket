@@ -12,7 +12,7 @@ Daemon local para simular buckets por proyecto y preparar integraciones multimed
 
 ## Comandos
 
-Desde PowerShell:
+Desde PowerShell (Windows):
 
 ```powershell
 .\bin\myelina-bucket.ps1 start
@@ -22,7 +22,19 @@ Desde PowerShell:
 .\bin\myelina-bucket.ps1 stop
 ```
 
+Desde Bash (Linux / macOS):
+
+```bash
+./bin/myelina-bucket start
+./bin/myelina-bucket status
+./bin/myelina-bucket create-project mi-app
+./bin/myelina-bucket list-projects
+./bin/myelina-bucket stop
+```
+
 ## Usarlo desde cualquier terminal
+
+### En Windows (PowerShell)
 
 Puedes dejar fija la ruta del proyecto con variables de entorno de usuario:
 
@@ -40,9 +52,24 @@ Puedes dejar fija la ruta del proyecto con variables de entorno de usuario:
 )
 ```
 
-Despues de abrir una terminal nueva, podras ejecutar:
+### En Linux / macOS (Bash)
 
-```powershell
+Puedes agregar el directorio al `PATH` y definir `MYELINA_BUCKET_HOME` en tu archivo de configuración (ej. `~/.bashrc` o `~/.zshrc`):
+
+```bash
+export MYELINA_BUCKET_HOME="/ruta/a/tu/myelinaBucket"
+export PATH="$PATH:$MYELINA_BUCKET_HOME/bin"
+```
+
+### Usando pnpm (Multiplataforma)
+
+Puedes enlazar el comando globalmente usando `pnpm`:
+
+```bash
+# Enlaza el comando myelina-bucket al gestor de paquetes global
+pnpm link --global
+
+# Después podrás ejecutar el comando directamente desde cualquier terminal
 myelina-bucket start
 myelina-bucket status
 myelina-bucket create-project mi-app
@@ -84,6 +111,7 @@ Con eso puedes configurar tu aplicacion para apuntar al endpoint local y autenti
 
 ### Subir un archivo
 
+En PowerShell:
 ```powershell
 $headers = @{
   "x-access-key" = "TU_ACCESS_KEY"
@@ -98,8 +126,19 @@ Invoke-WebRequest `
   -ContentType "application/octet-stream"
 ```
 
+En Bash (Linux/macOS con curl):
+```bash
+curl -X PUT \
+  -H "x-access-key: TU_ACCESS_KEY" \
+  -H "x-secret-key: TU_SECRET_KEY" \
+  -H "Content-Type: application/octet-stream" \
+  --data-binary "@/ruta/al/archivo.png" \
+  "http://127.0.0.1:4040/b/mi-app-bucket/media/avatar.png"
+```
+
 ### Descargar un archivo
 
+En PowerShell:
 ```powershell
 $headers = @{
   "x-access-key" = "TU_ACCESS_KEY"
@@ -113,8 +152,17 @@ Invoke-WebRequest `
   -OutFile "C:\tmp\avatar.png"
 ```
 
+En Bash (Linux/macOS con curl):
+```bash
+curl -H "x-access-key: TU_ACCESS_KEY" \
+  -H "x-secret-key: TU_SECRET_KEY" \
+  -o "/ruta/al/destino.png" \
+  "http://127.0.0.1:4040/b/mi-app-bucket/media/avatar.png"
+```
+
 ### Borrar un archivo
 
+En PowerShell:
 ```powershell
 $headers = @{
   "x-access-key" = "TU_ACCESS_KEY"
@@ -127,8 +175,17 @@ Invoke-RestMethod `
   -Headers $headers
 ```
 
+En Bash (Linux/macOS con curl):
+```bash
+curl -X DELETE \
+  -H "x-access-key: TU_ACCESS_KEY" \
+  -H "x-secret-key: TU_SECRET_KEY" \
+  "http://127.0.0.1:4040/b/mi-app-bucket/media/avatar.png"
+```
+
 ### Listar objetos
 
+En PowerShell:
 ```powershell
 $headers = @{
   "x-access-key" = "TU_ACCESS_KEY"
@@ -139,6 +196,13 @@ Invoke-RestMethod `
   -Method Get `
   -Uri "http://127.0.0.1:4040/b/mi-app-bucket?prefix=media/" `
   -Headers $headers
+```
+
+En Bash (Linux/macOS con curl):
+```bash
+curl -H "x-access-key: TU_ACCESS_KEY" \
+  -H "x-secret-key: TU_SECRET_KEY" \
+  "http://127.0.0.1:4040/b/mi-app-bucket?prefix=media/"
 ```
 
 ## Notas

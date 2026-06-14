@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -e
+
+# Resolve the root directory of myelinaBucket
+configuredRoot="$MYELINA_BUCKET_HOME"
+if [ -n "$configuredRoot" ]; then
+  root="$configuredRoot"
+else
+  # Get directory where the script is located, then go up one level
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  root="$(dirname "$script_dir")"
+fi
+
+# Detect Node path
+nodePath="$MYELINA_BUCKET_NODE_PATH"
+
+if [ -z "$nodePath" ]; then
+  # Check for Codex bundled Node on Linux/macOS
+  bundledNode="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
+  if [ -x "$bundledNode" ]; then
+    nodePath="$bundledNode"
+  else
+    # Fallback to system node
+    nodePath="$(command -v node 2>/dev/null)"
+  fi
+fi
+
+if [ -z "$nodePath" ]; then
+  echo "Error: Node.js no está disponible. Define MYELINA_BUCKET_NODE_PATH o instala Node." >&2
+  exit 1
+fi
+
+exec "$nodePath" "$root/src/cli.js" "$@"
